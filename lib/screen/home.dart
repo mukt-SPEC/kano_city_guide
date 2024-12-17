@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:kano_city_guide/core/site_list.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/textstyle.dart';
+import 'package:kano_city_guide/screen/history_list.dart';
 import 'package:kano_city_guide/widget/history.dart';
 import 'package:kano_city_guide/widget/places.dart';
 import 'package:flutter/material.dart';
@@ -58,17 +59,27 @@ class _HomePageState extends State<HomePage> {
               width: 8,
             ),
             Text(
-              'Kano city guide',
+              'Hello, User',
               style: kTextStyle(16),
             ),
           ],
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search_rounded),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.bookmark_border,
+                  ),
+                ),
+                const CircleAvatar(
+                  backgroundColor: Color.fromARGB(255, 214, 214, 214),
+                  radius: 18,
+                ),
+              ],
             ),
           ),
         ],
@@ -87,8 +98,15 @@ class _HomePageState extends State<HomePage> {
                       stream: streamController.stream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          return HistoryWidget(
-                            imagePath: snapshot.data!,
+                          return InkWell(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HistoryList(),
+                              ),
+                            ),
+                            child: HistoryWidget(
+                                snapshot.data!, 'History of kano'),
                           );
                         } else {
                           return const SizedBox();
@@ -102,6 +120,7 @@ class _HomePageState extends State<HomePage> {
                         'Places to visit',
                         style: kTextStyle(14, textWeight: TextWeight.semiBold),
                       ),
+
                       // TextButton(
                       //   onPressed: () {},
                       //   child: Row(

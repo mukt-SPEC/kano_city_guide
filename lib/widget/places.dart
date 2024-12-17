@@ -43,12 +43,13 @@ class Places extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: 8,
-                left: 8,
+                bottom: 8,
+                right: 8,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: const Color(0xfff1f1f1).withOpacity(0.5),
+                    color: const Color.fromARGB(255, 143, 142, 142)
+                        .withOpacity(0.5),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),

@@ -5,7 +5,8 @@ import '../core/textstyle.dart';
 
 class HistoryWidget extends StatelessWidget {
   final String imagePath;
-  const HistoryWidget({required this.imagePath, super.key});
+  final String? text;
+  const HistoryWidget(this.imagePath, this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class HistoryWidget extends StatelessWidget {
       height: 104,
       child: Center(
         child: Text(
-          'History of kano',
+          text!,
           style: kTextStyle(
             18,
             textWeight: TextWeight.semiBold,
