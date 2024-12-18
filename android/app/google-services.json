@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "329471244368",
+    "project_id": "kano-city-guide-app",
+    "storage_bucket": "kano-city-guide-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:329471244368:android:21428986153114f0917955",
+        "android_client_info": {
+          "package_name": "com.example.kano_city_guide"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5tDD9ANiNZu_ZJeJEMfFAipme69HP6e0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

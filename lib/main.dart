@@ -5,6 +5,7 @@ import 'package:kano_city_guide/screen/onboarding.dart';
 import 'package:kano_city_guide/service/onboarding_setting.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await OnboardingSetting.init();
   runApp(const MyApp());
 }

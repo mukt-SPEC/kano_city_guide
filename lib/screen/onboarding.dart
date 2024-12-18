@@ -27,7 +27,7 @@ class OnboardingScreen extends StatelessWidget {
         ),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(72.0),
+            padding: const EdgeInsets.fromLTRB(16, 96, 16, 48),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -40,11 +40,35 @@ class OnboardingScreen extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text(
-                      'lore ipsssg gsfggfgefftefdfefgfefdgffdg',
-                      style: kTextStyle(
-                        14,
-                        color: const Color(0xffffffff),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: const Color(0xff000000).withOpacity(0.3),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Welcome to Kano',
+                            style: kTextStyle(
+                              20,
+                              textWeight: TextWeight.semiBold,
+                              color: const Color(0xffffffff),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                            'You\'ve taken the first step towards an unforgettable exploration. Get ready to discover hidden gems, savor local flavors, and immerse yourself in the vibrant culture of Northern Nigeria. Let\'s find your way around. ',
+                            style: kTextStyle(
+                              14,
+                              textWeight: TextWeight.normal,
+                              color: const Color(0xffffffff),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(
@@ -61,8 +85,8 @@ class OnboardingScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () async{
-                          await OnboardingSetting.passOnboardingScreen();
+                        onPressed: () async {
+                          //await OnboardingSetting.passOnboardingScreen();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
