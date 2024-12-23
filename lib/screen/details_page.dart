@@ -2,6 +2,7 @@ import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/textstyle.dart';
 import 'package:kano_city_guide/model/tourist_site.dart';
 import 'package:flutter/material.dart';
+import 'package:kano_city_guide/widget/bottom_modal.dart';
 
 class DetailsPage extends StatefulWidget {
   final Touristsite site;
@@ -70,21 +71,34 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Color.fromARGB(255, 168, 152, 10),
+                      InkWell(
+                        onTap: () => showModalBottomSheet(
+                          isScrollControlled: true,
+                          showDragHandle: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(12),
+                            ),
                           ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            site.rating.toString(),
-                            style:
-                                kTextStyle(14, textWeight: TextWeight.semiBold),
-                          ),
-                        ],
+                          context: context,
+                          builder: (context) => const BottomModal(),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              color: Color.fromARGB(255, 168, 152, 10),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              site.rating.toString(),
+                              style: kTextStyle(14,
+                                  textWeight: TextWeight.semiBold),
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -113,6 +127,60 @@ class _DetailsPageState extends State<DetailsPage> {
                     height: 8,
                   ),
                   Container(
+                    child: Column(
+                      children: [
+                        Text(
+                          'Rate this place',
+                          style:
+                              kTextStyle(18, textWeight: TextWeight.semiBold),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          'Tell others about this place',
+                          style:
+                              kTextStyle(18, textWeight: TextWeight.semiBold),
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.star),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                             IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.star),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                             IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.star),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                             IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.star),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Container(
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
@@ -127,31 +195,6 @@ class _DetailsPageState extends State<DetailsPage> {
                 ],
               ),
             ),
-            Positioned(
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      'Get Direction',
-                      style: kTextStyle(16,
-                          textWeight: TextWeight.semiBold,
-                          color: const Color(0xffffffff)),
-                    ),
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),
