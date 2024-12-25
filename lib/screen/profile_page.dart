@@ -20,10 +20,10 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
-            Column(
+            const Column(
               children: [
                 CircleAvatar(),
-                const SizedBox(
+                SizedBox(
                   height: 12,
                 ),
                 TextField(),
@@ -48,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("No"),
+                        child: const Text("No"),
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -56,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Navigator.pop(context);
                           authProvider.signOut(context);
                         },
-                        child: Text("Yes"),
+                        child: const Text("Yes"),
                       )
                     ],
                   ),

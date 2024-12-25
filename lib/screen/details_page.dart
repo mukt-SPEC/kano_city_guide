@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kano_city_guide/core/enums.dart';
+import 'package:kano_city_guide/core/site_list.dart';
 import 'package:kano_city_guide/core/textstyle.dart';
+import 'package:kano_city_guide/main.dart';
 import 'package:kano_city_guide/model/tourist_site.dart';
 import 'package:flutter/material.dart';
+import 'package:kano_city_guide/service/db.dart';
 import 'package:kano_city_guide/widget/bottom_modal.dart';
+import 'package:provider/provider.dart';
 
 class DetailsPage extends StatefulWidget {
   final Touristsite site;
@@ -14,6 +18,11 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final site = widget.site;
@@ -179,6 +188,48 @@ class _DetailsPageState extends State<DetailsPage> {
                         )
                       ],
                     ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Column(
+                    children: [
+                      Text('Reviews'),
+                      FirebaseAuth.instance.currentUser != null
+                          ? StreamBuilder(
+                              stream: DataBase().retreiveReview(
+                                  context, places.indexOf(site)),
+                              builder: (ctx, snapshot) {
+                                if (snapshot.hasData) {
+                                  final reviews = snapshot.data;
+                                  return InkWell(
+                                      onTap: () => showModalBottomSheet(
+                                          context: context,
+                                          builder: (ctx) {
+                                            return Container();
+                                          }),
+                                      child: Text(reviews!.first.review!));
+                                } else if (snapshot.hasError) {
+                                  return Text(snapshot.error.toString());
+                                }
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              })
+                          : InkWell(
+                              onTap: () => showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    showDragHandle: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                    ),
+                                    context: context,
+                                    builder: (context) => const BottomModal(),
+                                  ),
+                              child: Text('Sign in to see reviews'))
+                    ],
                   ),
                   const SizedBox(
                     height: 8,

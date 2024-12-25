@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kano_city_guide/providers/auth_provider.dart';
 import 'package:kano_city_guide/screen/home.dart';
 import 'package:kano_city_guide/screen/onboarding.dart';
+import 'package:kano_city_guide/service/db.dart';
 import 'package:kano_city_guide/service/onboarding_setting.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
+       
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
