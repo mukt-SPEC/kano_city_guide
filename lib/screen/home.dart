@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kano_city_guide/core/site_list.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/textstyle.dart';
 import 'package:kano_city_guide/screen/history_list.dart';
+import 'package:kano_city_guide/screen/profile_page.dart';
 import 'package:kano_city_guide/widget/history.dart';
 import 'package:kano_city_guide/widget/places.dart';
 import 'package:flutter/material.dart';
+
+import '../widget/bottom_modal.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,9 +62,21 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               width: 8,
             ),
-            Text(
-              'Hello, User',
-              style: kTextStyle(16),
+            StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              // initialData: User(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    'Hello, ${FirebaseAuth.instance.currentUser!.displayName!.split(' ').first}',
+                    style: kTextStyle(16),
+                  );
+                }
+                return Text(
+                  'Hello, User',
+                  style: kTextStyle(16),
+                );
+              },
             ),
           ],
         ),
@@ -75,9 +91,35 @@ class _HomePageState extends State<HomePage> {
                     Icons.bookmark_border,
                   ),
                 ),
-                const CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 214, 214, 214),
-                  radius: 18,
+                GestureDetector(
+                  onTap: () {
+                    FirebaseAuth.instance.currentUser == null
+                        ? showModalBottomSheet(
+                            isScrollControlled: true,
+                            showDragHandle: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(12),
+                              ),
+                            ),
+                            context: context,
+                            builder: (context) => const BottomModal(),
+                          )
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProfilePage(),
+                            ),
+                          );
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Color.fromARGB(255, 214, 214, 214),
+                    radius: 18,
+                    child: Icon(
+                      Icons.person,
+                      color: Color(0xff121212),
+                    ),
+                  ),
                 ),
               ],
             ),

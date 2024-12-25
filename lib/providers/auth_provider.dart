@@ -1,17 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:kano_city_guide/model/user.dart';
 import 'package:kano_city_guide/service/auth_service.dart';
+import 'package:kano_city_guide/service/db.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool? isloading;
+  DataBase? dataBase;
   // bool? isSignedIn;
   AuthService? authService;
 
   AuthProvider() {
     authService = AuthService();
     isloading = false;
+    dataBase = DataBase();
   }
 
-  void signIn(BuildContext context, String email, String password) async {
+  Future<void> signIn(
+      BuildContext context, String email, String password) async {
     isloading = true;
     notifyListeners();
     await authService!
@@ -20,23 +26,54 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signUp(
+  Future<void> signUp(
       BuildContext context, String name, String email, String password) async {
-    isloading = true;
-    notifyListeners();
-    await authService!
-        .signUp(context: context, name: name, email: email, password: password);
-    isloading = false;
-    notifyListeners();
+    try {
+      isloading = true;
+      notifyListeners();
+      await authService!.signUp(
+          context: context, name: name, email: email, password: password);
+      await dataBase!.createUser(
+        context,
+        User(
+          id: FirebaseAuth.instance.currentUser!.uid,
+          name: name,
+          favouritePlaces: [],
+        ),
+      );
+      isloading = false;
+      notifyListeners();
+    } catch (e) {
+      isloading = false;
+      notifyListeners();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+    }
   }
 
-  void signOut(BuildContext context) async {
-    isloading = true;
-    notifyListeners();
-    await authService!.signOut(
-      context,
-    );
-    isloading = false;
-    notifyListeners();
+  Future<void> signOut(BuildContext context) async {
+    try {
+      isloading = true;
+      notifyListeners();
+      await authService!.signOut(
+        context,
+      );
+      isloading = false;
+    } catch (e) {
+      isloading = false;
+      notifyListeners();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+    }
   }
 }

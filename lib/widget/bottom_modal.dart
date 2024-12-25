@@ -19,7 +19,7 @@ class _BottomModalState extends State<BottomModal> {
   final TextEditingController _controllerUsername = TextEditingController();
   final FocusNode focusNodeEmail = FocusNode();
   final FocusNode focusNodePassword = FocusNode();
-  bool hasAnAccount = false;
+  bool hasAnAccount = true;
 
   @override
   Widget build(BuildContext context) {
@@ -125,26 +125,30 @@ class _BottomModalState extends State<BottomModal> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 hasAnAccount
-                    ? authProvider.signUp(
+                    ? await authProvider.signUp(
                         context,
                         _controllerUsername.text.trim(),
                         _controllerEmail.text.trim(),
                         _controllerPassword.text.trim(),
                       )
-                    : authProvider.signIn(
+                    : await authProvider.signIn(
                         context,
                         _controllerEmail.text.trim(),
                         _controllerPassword.text.trim(),
                       );
+
+                Navigator.of(context).pop();
               },
-              child: Text(
-                hasAnAccount ? 'Sign Up' : 'Sign In',
-                style: kTextStyle(18,
-                    textWeight: TextWeight.semiBold,
-                    color: const Color(0xffffffff)),
-              ),
+              child: authProvider.isloading!
+                  ? const CircularProgressIndicator()
+                  : Text(
+                      hasAnAccount ? 'Sign Up' : 'Sign In',
+                      style: kTextStyle(18,
+                          textWeight: TextWeight.semiBold,
+                          color: const Color(0xffffffff)),
+                    ),
             ),
           ),
           const SizedBox(

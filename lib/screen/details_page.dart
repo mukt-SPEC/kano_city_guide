@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/textstyle.dart';
 import 'package:kano_city_guide/model/tourist_site.dart';
@@ -72,17 +73,19 @@ class _DetailsPageState extends State<DetailsPage> {
                         ],
                       ),
                       InkWell(
-                        onTap: () => showModalBottomSheet(
-                          isScrollControlled: true,
-                          showDragHandle: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(12),
-                            ),
-                          ),
-                          context: context,
-                          builder: (context) => const BottomModal(),
-                        ),
+                        onTap: () => FirebaseAuth.instance.currentUser != null
+                            ? null
+                            : showModalBottomSheet(
+                                isScrollControlled: true,
+                                showDragHandle: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                ),
+                                context: context,
+                                builder: (context) => const BottomModal(),
+                              ),
                         child: Row(
                           children: [
                             const Icon(
@@ -151,21 +154,21 @@ class _DetailsPageState extends State<DetailsPage> {
                             const SizedBox(
                               width: 8,
                             ),
-                             IconButton(
+                            IconButton(
                               onPressed: () {},
                               icon: const Icon(Icons.star),
                             ),
                             const SizedBox(
                               width: 8,
                             ),
-                             IconButton(
+                            IconButton(
                               onPressed: () {},
                               icon: const Icon(Icons.star),
                             ),
                             const SizedBox(
                               width: 8,
                             ),
-                             IconButton(
+                            IconButton(
                               onPressed: () {},
                               icon: const Icon(Icons.star),
                             ),

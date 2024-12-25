@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +18,7 @@ class AuthService {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
+      log(e.toString());
       String? error;
       if (e.code == 'user-not-found') {
         error = "User not found";
@@ -51,6 +52,7 @@ class AuthService {
       );
       await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
     } on FirebaseAuthException catch (e) {
+      log(e.toString());
       String? error;
       if (e.code == 'email-already-in-use') {
         error = "email already in use";
@@ -59,13 +61,7 @@ class AuthService {
       } else {
         error = e.message;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            error!,
-          ),
-        ),
-      );
+      throw Exception(error);
     }
   }
 
@@ -73,13 +69,7 @@ class AuthService {
     try {
       await FirebaseAuth.instance.signOut();
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
+      throw Exception(e);
     }
   }
 }

@@ -1,5 +1,3 @@
-import 'package:kano_city_guide/model/coordinate.dart';
-
 class User {
   String? id;
   String? name;
@@ -14,5 +12,13 @@ class User {
       'name': name,
       'favouritePlaces': favouritePlaces,
     };
+  }
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      name: json['name'],
+      favouritePlaces: json['favouritePlaces'],
+    );
   }
 }
