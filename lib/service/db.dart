@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kano_city_guide/model/review.dart';
@@ -24,13 +26,7 @@ class DataBase {
       final doc = await firestore.collection('Users').doc(id).get();
       return User.fromJson(doc.data()!);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
+      log(e.toString());
       return null;
     }
   }

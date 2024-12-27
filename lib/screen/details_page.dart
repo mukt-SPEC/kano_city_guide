@@ -1,4 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/site_list.dart';
 import 'package:kano_city_guide/core/textstyle.dart';
@@ -7,6 +9,7 @@ import 'package:kano_city_guide/model/tourist_site.dart';
 import 'package:flutter/material.dart';
 import 'package:kano_city_guide/service/db.dart';
 import 'package:kano_city_guide/widget/bottom_modal.dart';
+import 'package:kano_city_guide/widget/review_modal.dart';
 import 'package:provider/provider.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -25,6 +28,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    int reviewCount = 0;
     final site = widget.site;
     return Scaffold(
       appBar: AppBar(
@@ -138,77 +142,116 @@ class _DetailsPageState extends State<DetailsPage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          'Rate this place',
-                          style:
-                              kTextStyle(18, textWeight: TextWeight.semiBold),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          'Tell others about this place',
-                          style:
-                              kTextStyle(18, textWeight: TextWeight.semiBold),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.star),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.star),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.star),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.star),
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
                   const SizedBox(
                     height: 8,
                   ),
                   Column(
                     children: [
-                      Text('Reviews'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Reviews'),
+                          Text(
+                            reviewCount.toString(),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
                       FirebaseAuth.instance.currentUser != null
                           ? StreamBuilder(
                               stream: DataBase().retreiveReview(
                                   context, places.indexOf(site)),
                               builder: (ctx, snapshot) {
                                 if (snapshot.hasData) {
+                                  //reviewCount = snapshot.data!.length;
+                                  log(snapshot.data.toString());
                                   final reviews = snapshot.data;
                                   return InkWell(
-                                      onTap: () => showModalBottomSheet(
+                                      onTap: () {
+                                        
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          showDragHandle: true,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(12),
+                                            ),
+                                          ),
                                           context: context,
                                           builder: (ctx) {
-                                            return Container();
-                                          }),
-                                      child: Text(reviews!.first.review!));
+                                            return ReviewModal(
+                                              review: snapshot.data,
+                                              siteId: places.indexOf(site),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                        width: double.infinity,
+                                        // height: 104,
+                                        padding: const EdgeInsets.all(18),
+                                        decoration: BoxDecoration(
+                                            color: const Color(0xffe6e6e6),
+                                            borderRadius:
+                                                BorderRadius.circular(12)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            reviews!.isEmpty
+                                                ? Text("No reviews yet")
+                                                : Column(
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          FutureBuilder(
+                                                            future: DataBase()
+                                                                .retrieveUser(
+                                                                    context,
+                                                                    reviews[0]
+                                                                        .userId!),
+                                                            builder: (context,
+                                                                snapshot) {
+                                                              if (snapshot
+                                                                  .hasData) {
+                                                                final user =
+                                                                    snapshot
+                                                                        .data;
+                                                                return Text(
+                                                                  user!.name!,
+                                                                  style: kTextStyle(
+                                                                      12,
+                                                                      textWeight:
+                                                                          TextWeight
+                                                                              .semiBold),
+                                                                );
+                                                              } else if (snapshot
+                                                                  .hasError) {
+                                                                return Text(
+                                                                    "A error occured");
+                                                              }
+                                                              return Text('');
+                                                            },
+                                                          ),
+                                                          Text(
+                                                            reviews[0].review!,
+                                                            style:
+                                                                kTextStyle(16),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
+                                      ));
                                 } else if (snapshot.hasError) {
                                   return Text(snapshot.error.toString());
                                 }
@@ -217,22 +260,24 @@ class _DetailsPageState extends State<DetailsPage> {
                                 );
                               })
                           : InkWell(
-                              onTap: () => showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    showDragHandle: true,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
+                              onTap: () {
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  showDragHandle: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(12),
                                     ),
-                                    context: context,
-                                    builder: (context) => const BottomModal(),
                                   ),
+                                  context: context,
+                                  builder: (context) => const BottomModal(),
+                                );
+                              },
                               child: Text('Sign in to see reviews'))
                     ],
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 24,
                   ),
                   Container(
                     width: double.infinity,

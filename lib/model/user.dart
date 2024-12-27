@@ -18,7 +18,7 @@ class User {
     return User(
       id: json['id'],
       name: json['name'],
-      favouritePlaces: json['favouritePlaces'],
+      favouritePlaces: List.from(json['favouritePlaces']),
     );
   }
 }
