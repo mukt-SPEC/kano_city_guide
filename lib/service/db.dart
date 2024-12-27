@@ -63,4 +63,15 @@ class DataBase {
       return null;
     }
   }
+  Future<void> createRating(double rating, int placeId) async{
+    await firestore.collection('Ratings').doc('place$placeId').set({
+      'ratings': FieldValue.arrayUnion([rating])
+    });
+  }  
+  Future<double> getRating(int placeId) async{
+    final doc = await firestore.collection('Ratings').doc('place$placeId').get();
+    final ratings = doc.data()!['ratings'];
+    final double rating = ratings.reduce((a, b) => a + b) / ratings.length;
+    return rating;
+  }
 }

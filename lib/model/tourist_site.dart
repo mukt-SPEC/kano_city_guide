@@ -6,7 +6,7 @@ class Touristsite {
   final Coordinate? coordinate;
   final String? placeName, address, description;
   final Category? category;
-  final double? rating;
+  double? rating;
   List<String> placeImages;
 
   Touristsite(
@@ -31,6 +31,7 @@ class Touristsite {
       'coordinate': coordinate,
     };
   }
+
   factory Touristsite.fromJson(Map<String, dynamic> data) {
     return Touristsite(
       placeName: data['placeName'],

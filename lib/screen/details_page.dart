@@ -1,9 +1,12 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/site_list.dart';
-import 'package:kano_city_guide/core/textstyle.dart';
+import 'package:kano_city_guide/widget/rating_alert.dart';
+import '../core/textstyle.dart';
+
 import 'package:kano_city_guide/main.dart';
 import 'package:kano_city_guide/model/tourist_site.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +90,12 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                       InkWell(
                         onTap: () => FirebaseAuth.instance.currentUser != null
-                            ? null
+                            ? showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  content: RatingAlert(),
+                                ),
+                              )
                             : showModalBottomSheet(
                                 isScrollControlled: true,
                                 showDragHandle: true,
@@ -170,7 +178,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                   final reviews = snapshot.data;
                                   return InkWell(
                                       onTap: () {
-                                        
                                         showModalBottomSheet(
                                           isScrollControlled: true,
                                           showDragHandle: true,
