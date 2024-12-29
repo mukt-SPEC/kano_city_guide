@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/site_list.dart';
-import 'package:kano_city_guide/widget/rating_alert.dart';
+
 import '../core/textstyle.dart';
 
 import 'package:kano_city_guide/main.dart';
@@ -31,6 +31,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double? _rating;
     int reviewCount = 0;
     final site = widget.site;
     return Scaffold(
@@ -93,7 +94,40 @@ class _DetailsPageState extends State<DetailsPage> {
                             ? showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  content: RatingAlert(),
+                                  content: RatingBar.builder(
+                                      initialRating: 0.0,
+                                      minRating: 1,
+                                      direction: Axis.horizontal,
+                                      itemCount: 5,
+                                      itemPadding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                      onRatingUpdate: (rating) {
+                                        setState(() {
+                                          _rating = rating;
+                                        });
+                                      }),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        await DataBase().createRating(
+                                          _rating!,
+                                          places.indexOf(site),
+                                        );
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Rate Now'),
+                                    )
+                                  ],
                                 ),
                               )
                             : showModalBottomSheet(
@@ -116,11 +150,23 @@ class _DetailsPageState extends State<DetailsPage> {
                             const SizedBox(
                               width: 4,
                             ),
-                            Text(
-                              site.rating.toString(),
-                              style: kTextStyle(14,
-                                  textWeight: TextWeight.semiBold),
-                            ),
+                            FutureBuilder(
+                                future:
+                                    DataBase().getRating(places.indexOf(site)),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      snapshot.data.toString() ?? '0.0',
+                                      style: kTextStyle(14,
+                                          textWeight: TextWeight.semiBold),
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    log(snapshot.error.toString());
+                                    return Text('o');
+                                  } else {
+                                    return const CircularProgressIndicator();
+                                  }
+                                }),
                           ],
                         ),
                       )
