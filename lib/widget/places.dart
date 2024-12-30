@@ -5,12 +5,14 @@ import 'package:kano_city_guide/screen/details_page.dart';
 import 'package:flutter/material.dart';
 
 import '../core/site_list.dart';
+import '../model/tourist_site.dart';
+import '../service/db.dart';
 
 class Places extends StatelessWidget {
-  // final Touristsite sites;
+  final Touristsite? sites;
   final int index;
 
-  const Places(this.index, {super.key});
+  const Places(this.index, {this.sites, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +64,22 @@ class Places extends StatelessWidget {
                         const SizedBox(
                           width: 4,
                         ),
-                        Text(
-                          places[index].rating.toString(),
-                          style:
-                              kTextStyle(14, textWeight: TextWeight.semiBold),
-                        ),
+                        FutureBuilder(
+                            future:
+                                DataBase().getRating(places.indexOf(sites!)),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data.toString() ?? '0.0',
+                                  style: kTextStyle(14,
+                                      textWeight: TextWeight.semiBold),
+                                );
+                              } else if (snapshot.hasError) {
+                                return const Text('0.0');
+                              } else {
+                                return const Text('0.0');
+                              }
+                            }),
                       ],
                     ),
                   ),

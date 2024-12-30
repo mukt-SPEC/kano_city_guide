@@ -162,9 +162,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                     );
                                   } else if (snapshot.hasError) {
                                     log(snapshot.error.toString());
-                                    return Text('o');
+                                    return  const Text('0.0');
                                   } else {
-                                    return const CircularProgressIndicator();
+                                    return const Text('0.0');
                                   }
                                 }),
                           ],
