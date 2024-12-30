@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:kano_city_guide/core/enums.dart';
+
 import 'package:kano_city_guide/core/textstyle.dart';
 //import 'package:kano_city_guide/model/tourist_site.dart';
 import 'package:kano_city_guide/screen/details_page.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../core/site_list.dart';
 import '../model/tourist_site.dart';
+import '../model/user.dart';
 import '../service/db.dart';
 
 class Places extends StatelessWidget {
@@ -43,6 +46,27 @@ class Places extends StatelessWidget {
                   color: const Color(0xfff2f2f2),
                   borderRadius: BorderRadius.circular(16),
                 ),
+              ),
+              Positioned(
+                child: StreamBuilder(
+                    stream: DataBase().retrieveUserStream(
+                        FirebaseAuth.instance.currentUser!.uid),
+                    builder: (context, snapshot) {
+                      User user = snapshot.data!;
+                      return InkWell(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: const Color.fromARGB(255, 143, 142, 142)
+                                .withOpacity(0.5),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(Icons.bookmark_border_rounded),
+                          ),
+                        ),
+                      );
+                    }),
               ),
               Positioned(
                 bottom: 8,

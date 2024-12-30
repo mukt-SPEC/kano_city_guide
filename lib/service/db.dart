@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kano_city_guide/model/review.dart';
 import 'package:kano_city_guide/model/user.dart';
+import 'package:kano_city_guide/screen/favorite.dart';
 
 class DataBase {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -76,5 +77,23 @@ class DataBase {
     final ratings = List.from(doc.data()!['ratings']);
     final double rating = ratings.reduce((a, b) => a + b) / ratings.length;
     return rating;
+  }
+
+  Future<void> addFavoritePlace(String userId, int placeId) async {
+    await firestore.collection('Users').doc(userId).update({
+      'favouritePlaces': FieldValue.arrayUnion([placeId])
+    });
+  }
+
+  Future<void> removeFavoritePlace(String userId, int placeId) async {
+    await firestore.collection('Users').doc(userId).update({
+      'favouritePlaces': FieldValue.arrayRemove([placeId])
+    });
+  }
+
+  Stream<User> retrieveUserStream(String id) {
+    return firestore.collection('Users').doc(id).snapshots().map((e) {
+      return User.fromJson(e.data()!);
+    });
   }
 }
