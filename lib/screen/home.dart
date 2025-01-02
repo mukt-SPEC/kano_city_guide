@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kano_city_guide/core/site_list.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/textstyle.dart';
+import 'package:kano_city_guide/screen/favorite.dart';
 import 'package:kano_city_guide/screen/history_list.dart';
 import 'package:kano_city_guide/screen/profile_page.dart';
 import 'package:kano_city_guide/widget/history.dart';
@@ -86,7 +87,14 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FavoritePage(),
+                      ),
+                    );
+                  },
                   icon: const Icon(
                     Icons.bookmark_border,
                   ),
@@ -244,6 +252,7 @@ class _HomePageState extends State<HomePage> {
                     ...places.map(
                       (site) => Places(
                         places.indexOf(site),
+                        sites: site,
                       ),
                     )
                   else
@@ -252,6 +261,7 @@ class _HomePageState extends State<HomePage> {
                         .map(
                           (site) => Places(
                             places.indexOf(site),
+                            sites: site,
                           ),
                         )
                 ],

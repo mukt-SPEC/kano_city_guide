@@ -71,12 +71,13 @@ class DataBase {
     });
   }
 
-  Future<double> getRating(int placeId) async {
+  Future<double?> getRating(int placeId) async {
     final doc =
         await firestore.collection('Ratings').doc('place$placeId').get();
+        log(doc.data().toString());
     final ratings = List.from(doc.data()!['ratings']);
-    final double rating = ratings.reduce((a, b) => a + b) / ratings.length;
-    return rating;
+    return ratings.reduce((a, b) => a + b) / ratings.length ?? 0.0;
+  
   }
 
   Future<void> addFavoritePlace(String userId, int placeId) async {

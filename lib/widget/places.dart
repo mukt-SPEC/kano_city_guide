@@ -48,21 +48,40 @@ class Places extends StatelessWidget {
                 ),
               ),
               Positioned(
+                top: 8,
+                left: 8,
                 child: StreamBuilder(
                     stream: DataBase().retrieveUserStream(
                         FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {
                       User user = snapshot.data!;
                       return InkWell(
+                        onTap: () => user.favouritePlaces!.contains(index)
+                            ? DataBase().removeFavoritePlace(
+                                FirebaseAuth.instance.currentUser!.uid,
+                                index,
+                              )
+                            : DataBase().addFavoritePlace(
+                                FirebaseAuth.instance.currentUser!.uid,
+                                index,
+                              ),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: const Color.fromARGB(255, 143, 142, 142)
                                 .withOpacity(0.5),
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(Icons.bookmark_border_rounded),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: user.favouritePlaces!.contains(index)
+                                ? const Icon(
+                                    Icons.bookmark,
+                                    size: 18,
+                                  )
+                                : const Icon(
+                                    Icons.bookmark_border,
+                                    size: 18,
+                                  ),
                           ),
                         ),
                       );
@@ -91,6 +110,7 @@ class Places extends StatelessWidget {
                         FutureBuilder(
                             future:
                                 DataBase().getRating(places.indexOf(sites!)),
+                            initialData: 0.0,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return Text(
