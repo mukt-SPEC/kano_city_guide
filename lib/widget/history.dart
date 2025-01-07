@@ -6,7 +6,8 @@ import '../core/textstyle.dart';
 class HistoryWidget extends StatelessWidget {
   final String imagePath;
   final String? text;
-  const HistoryWidget(this.imagePath, this.text, {super.key});
+  final double? height;
+  const HistoryWidget(this.imagePath, this.text, {this.height, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class HistoryWidget extends StatelessWidget {
         color: const Color(0xFFF1F1F1),
       ),
       width: double.infinity,
-      height: 104,
+      height: height ?? 104,
       child: Center(
         child: Text(
           text!,

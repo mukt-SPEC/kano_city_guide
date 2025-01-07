@@ -55,13 +55,14 @@ class _DetailsPageState extends State<DetailsPage> {
                     height: 240,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: const Color(0xfff2f2f2),
+                      borderRadius: BorderRadius.circular(0),
+                      //color: const Color(0xfff2f2f2),
                     ),
                     child: CarouselView(itemExtent: double.infinity, children: [
                       ...site.placeImages.map((image) {
                         return Container(
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
                             image: DecorationImage(
                               opacity: 0.9,
                               fit: BoxFit.fill,
@@ -162,7 +163,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                     );
                                   } else if (snapshot.hasError) {
                                     log(snapshot.error.toString());
-                                    return  const Text('0.0');
+                                    return const Text('0.0');
                                   } else {
                                     return const Text('0.0');
                                   }

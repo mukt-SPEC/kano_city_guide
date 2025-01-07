@@ -20,7 +20,11 @@ class HistoryList extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: Column(
             children: [
-              HistoryWidget('Emir_of_Kano_c.1910.jpg', '1955'),
+              HistoryWidget(
+                'Emir_of_Kano_c.1910.jpg',
+                '1955',
+                height: 240,
+              ),
               SizedBox(
                 height: 12,
               ),

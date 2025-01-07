@@ -156,7 +156,10 @@ class Places extends StatelessWidget {
               ),
               Row(
                 children: [
-                  const Icon(Icons.person),
+                  const Icon(
+                    Icons.chat_bubble,
+                    size: 16,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     places[index].userReview.toString(),
