@@ -54,37 +54,45 @@ class Places extends StatelessWidget {
                     stream: DataBase().retrieveUserStream(
                         FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {
-                      User user = snapshot.data!;
-                      return InkWell(
-                        onTap: () => user.favouritePlaces!.contains(index)
-                            ? DataBase().removeFavoritePlace(
-                                FirebaseAuth.instance.currentUser!.uid,
-                                index,
-                              )
-                            : DataBase().addFavoritePlace(
-                                FirebaseAuth.instance.currentUser!.uid,
-                                index,
-                              ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: const Color.fromARGB(255, 143, 142, 142)
-                                .withOpacity(0.5),
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data == null) {
+                        return const Text('No user data available');
+                      } else {
+                        User user = snapshot.data!;
+                        return InkWell(
+                          onTap: () => user.favouritePlaces!.contains(index)
+                              ? DataBase().removeFavoritePlace(
+                                  FirebaseAuth.instance.currentUser!.uid,
+                                  index,
+                                )
+                              : DataBase().addFavoritePlace(
+                                  FirebaseAuth.instance.currentUser!.uid,
+                                  index,
+                                ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: const Color.fromARGB(255, 143, 142, 142)
+                                  .withOpacity(0.5),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: user.favouritePlaces!.contains(index)
+                                  ? const Icon(
+                                      Icons.bookmark,
+                                      size: 18,
+                                    )
+                                  : const Icon(
+                                      Icons.bookmark_border,
+                                      size: 18,
+                                    ),
+                            ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: user.favouritePlaces!.contains(index)
-                                ? const Icon(
-                                    Icons.bookmark,
-                                    size: 18,
-                                  )
-                                : const Icon(
-                                    Icons.bookmark_border,
-                                    size: 18,
-                                  ),
-                          ),
-                        ),
-                      );
+                        );
+                      }
                     }),
               ),
               Positioned(
