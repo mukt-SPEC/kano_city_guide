@@ -99,10 +99,10 @@ class _HomePageState extends State<HomePage> {
                     Icons.bookmark_border,
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    FirebaseAuth.instance.currentUser == null
-                        ? showModalBottomSheet(
+                FirebaseAuth.instance.currentUser == null
+                    ? GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
                             isScrollControlled: true,
                             showDragHandle: true,
                             shape: const RoundedRectangleBorder(
@@ -112,23 +112,47 @@ class _HomePageState extends State<HomePage> {
                             ),
                             context: context,
                             builder: (context) => const BottomModal(),
-                          )
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfilePage(),
-                            ),
                           );
-                  },
-                  child: const CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 214, 214, 214),
-                    radius: 18,
-                    child: Icon(
-                      Icons.person,
-                      color: Color(0xff121212),
-                    ),
-                  ),
-                ),
+
+                          // : Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => const ProfilePage(),
+                          //     ),
+                          //   );
+                        },
+                        child: const CircleAvatar(
+                          backgroundColor: Color.fromARGB(255, 214, 214, 214),
+                          radius: 18,
+                          child: Icon(
+                            Icons.person,
+                            color: Color(0xff121212),
+                          ),
+                        ),
+                      )
+                    : PopupMenuButton(
+                        icon: const CircleAvatar(
+                          backgroundColor: Color.fromARGB(255, 214, 214, 214),
+                          radius: 18,
+                          child: Icon(
+                            Icons.person,
+                            color: Color(0xff121212),
+                          ),
+                        ),
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                              child: ListTile(
+                                title: const Text('Sign Out'),
+                                onTap: () {
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ];
+                        },
+                      ),
               ],
             ),
           ),

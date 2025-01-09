@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart' hide User;
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/site_list.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../core/textstyle.dart';
 
@@ -31,7 +33,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    double? _rating;
+    double? rating;
     int reviewCount = 0;
     final site = widget.site;
     return Scaffold(
@@ -102,13 +104,13 @@ class _DetailsPageState extends State<DetailsPage> {
                                       itemCount: 5,
                                       itemPadding: const EdgeInsets.symmetric(
                                           horizontal: 8),
-                                      itemBuilder: (context, _) => Icon(
+                                      itemBuilder: (context, _) => const Icon(
                                             Icons.star,
                                             color: Colors.amber,
                                           ),
                                       onRatingUpdate: (rating) {
                                         setState(() {
-                                          _rating = rating;
+                                          rating = rating;
                                         });
                                       }),
                                   actions: [
@@ -116,17 +118,17 @@ class _DetailsPageState extends State<DetailsPage> {
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text('Cancel'),
+                                      child: const Text('Cancel'),
                                     ),
                                     ElevatedButton(
                                       onPressed: () async {
                                         await DataBase().createRating(
-                                          _rating!,
+                                          rating!,
                                           places.indexOf(site),
                                         );
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text('Rate Now'),
+                                      child: const Text('Rate Now'),
                                     )
                                   ],
                                 ),
@@ -205,7 +207,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Reviews'),
+                          const Text('Reviews'),
                           Text(
                             reviewCount.toString(),
                           ),
@@ -255,7 +257,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                               MainAxisAlignment.start,
                                           children: [
                                             reviews!.isEmpty
-                                                ? Text("No reviews yet")
+                                                ? const Text("No reviews yet")
                                                 : Column(
                                                     children: [
                                                       Column(
@@ -288,10 +290,11 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                 );
                                                               } else if (snapshot
                                                                   .hasError) {
-                                                                return Text(
+                                                                return const Text(
                                                                     "A error occured");
                                                               }
-                                                              return Text('');
+                                                              return const Text(
+                                                                  '');
                                                             },
                                                           ),
                                                           Text(
@@ -309,7 +312,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 } else if (snapshot.hasError) {
                                   return Text(snapshot.error.toString());
                                 }
-                                return Center(
+                                return const Center(
                                   child: CircularProgressIndicator(),
                                 );
                               })
@@ -327,22 +330,53 @@ class _DetailsPageState extends State<DetailsPage> {
                                   builder: (context) => const BottomModal(),
                                 );
                               },
-                              child: Text('Sign in to see reviews'))
+                              child: const Text('Sign in to see reviews'))
                     ],
                   ),
                   const SizedBox(
                     height: 24,
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      color: const Color(0xfff2f2f2),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        width: 1.5,
-                        color: const Color(0xff121212),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      width: double.infinity,
+                      height: 300,
+                      decoration: const BoxDecoration(
+                        color: Color(0xfff2f2f2),
                       ),
+                      child: FlutterMap(
+                          options: MapOptions(
+                            initialCenter: LatLng(site.coordinate!.latitude!,
+                                site.coordinate!.longitude!),
+                            initialZoom: 16,
+                          ),
+                          children: [
+                            TileLayer(
+                                urlTemplate:
+                                    'https://api.mapbox.com/styles/v1/nanafirdaus/cm5nudaqf00d901rz67s03j1c/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
+                                userAgentPackageName:
+                                    'com.example.kano_city_guide',
+                                additionalOptions: const {
+                                  'accessToken':
+                                      'pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
+                                  'id':
+                                      'mapbox://styles/nanafirdaus/cm5nudaqf00d901rz67s03j1c'
+                                }),
+                            MarkerLayer(markers: [
+                              Marker(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  point: LatLng(site.coordinate!.latitude!,
+                                      site.coordinate!.longitude!),
+                                  child: Container(
+                                    child: const Icon(
+                                      Icons.location_on,
+                                      color: Colors.red,
+                                      size: 40,
+                                    ),
+                                  ))
+                            ])
+                          ]),
                     ),
                   ),
                 ],

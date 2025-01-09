@@ -26,6 +26,9 @@ class FavoritePage extends StatelessWidget {
               .retrieveUserStream(FirebaseAuth.instance.currentUser!.uid),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              if(snapshot.data!.favouritePlaces!.isEmpty){
+                return const Center(child: Text('No Favourite Places'));
+              }
               return SingleChildScrollView(
                 child: Column(
                   children: [
