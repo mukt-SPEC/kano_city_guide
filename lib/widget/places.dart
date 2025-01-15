@@ -51,20 +51,21 @@ class Places extends StatelessWidget {
                 top: 8,
                 left: 8,
                 child: FirebaseAuth.instance.currentUser == null
-                    ? Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: const Color.fromARGB(255, 143, 142, 142)
-                              .withOpacity(0.5),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.bookmark_border,
-                            size: 18,
-                          ),
-                        ),
-                      )
+                    ? const SizedBox()
+                    // ? Container(
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(8),
+                    //       color: const Color.fromARGB(255, 143, 142, 142)
+                    //           .withOpacity(0.5),
+                    //     ),
+                    //     child: const Padding(
+                    //       padding: EdgeInsets.all(8.0),
+                    //       child: Icon(
+                    //         Icons.bookmark_border,
+                    //         size: 18,
+                    //       ),
+                    //     ),
+                    //   )
                     : StreamBuilder(
                         stream: DataBase().retrieveUserStream(
                             FirebaseAuth.instance.currentUser!.uid),
@@ -102,10 +103,13 @@ class Places extends StatelessWidget {
                                       ? const Icon(
                                           Icons.bookmark,
                                           size: 18,
+                                          color: Colors.brown,
                                         )
                                       : const Icon(
                                           Icons.bookmark_border,
                                           size: 18,
+                                          color:
+                                              Color.fromARGB(255, 99, 66, 54),
                                         ),
                                 ),
                               ),
@@ -167,16 +171,36 @@ class Places extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    places[index].placeName!,
-                    style: kTextStyle(14, textWeight: TextWeight.medium),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.local_attraction_rounded,
+                        color: Colors.brown[300],
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        places[index].placeName!,
+                        style: kTextStyle(14, textWeight: TextWeight.medium),
+                      ),
+                    ],
                   ),
                   const SizedBox(
-                    height: 4,
+                    height: 8,
                   ),
-                  Text(
-                    places[index].address!,
-                    style: kTextStyle(12, textWeight: TextWeight.normal),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_pin,
+                        color: Colors.brown[300],
+                        size: 16,
+                      ),
+                      Text(
+                        places[index].address!,
+                        style: kTextStyle(12, textWeight: TextWeight.normal),
+                      ),
+                    ],
                   ),
                 ],
               ),

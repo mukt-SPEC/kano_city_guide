@@ -31,6 +31,11 @@ class _HomePageState extends State<HomePage> {
     generateImages();
   }
 
+  String nameInitials(String name) {
+    List<String> nameSplit = name.split(' ');
+    return nameSplit[0][0].toUpperCase() + nameSplit[1][0].toUpperCase();
+  }
+
   void generateImages() async {
     while (true) {
       streamController.sink.add("history1.jpg");
@@ -68,14 +73,40 @@ class _HomePageState extends State<HomePage> {
               // initialData: User(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
-                  return Text(
-                    'Hello, ${FirebaseAuth.instance.currentUser!.displayName!.split(' ').first}',
-                    style: kTextStyle(16),
+                  return RichText(
+                    text: TextSpan(
+                      text: 'Hello, ',
+                      style: kTextStyle(14),
+                      children: [
+                        TextSpan(
+                          text: FirebaseAuth.instance.currentUser!.displayName!
+                              .split(' ')
+                              .first,
+                          style: kTextStyle(
+                            16,
+                            textWeight: TextWeight.semiBold,
+                            color: Colors.brown[500]!,
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }
-                return Text(
-                  'Hello, User',
-                  style: kTextStyle(16),
+                return RichText(
+                  text: TextSpan(
+                    text: 'Hello, ',
+                    style: kTextStyle(14),
+                    children: [
+                      TextSpan(
+                        text: ' Guest',
+                        style: kTextStyle(
+                          16,
+                          textWeight: TextWeight.semiBold,
+                          color: Colors.brown[500]!,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
@@ -97,6 +128,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   icon: const Icon(
                     Icons.bookmark_border,
+                    color: Colors.brown,
                   ),
                 ),
                 FirebaseAuth.instance.currentUser == null
@@ -121,22 +153,25 @@ class _HomePageState extends State<HomePage> {
                           //     ),
                           //   );
                         },
-                        child: const CircleAvatar(
-                          backgroundColor: Color.fromARGB(255, 214, 214, 214),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.brown[50],
                           radius: 18,
-                          child: Icon(
+                          child: const Icon(
                             Icons.person,
-                            color: Color(0xff121212),
+                            color: Colors.brown,
                           ),
                         ),
                       )
                     : PopupMenuButton(
-                        icon: const CircleAvatar(
-                          backgroundColor: Color.fromARGB(255, 214, 214, 214),
+                        icon: CircleAvatar(
+                          backgroundColor: Colors.brown[50],
                           radius: 18,
-                          child: Icon(
-                            Icons.person,
-                            color: Color(0xff121212),
+                          child: Text(
+                            nameInitials(FirebaseAuth
+                                .instance.currentUser!.displayName!),
+                            style: kTextStyle(14,
+                                color: Colors.brown[500]!,
+                                textWeight: TextWeight.medium),
                           ),
                         ),
                         itemBuilder: (context) {
@@ -188,8 +223,15 @@ class _HomePageState extends State<HomePage> {
                       }),
                   const SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const Icon(
+                        Icons.apartment_rounded,
+                        size: 18,
+                        color: Colors.brown,
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
                       Text(
                         'Places to visit',
                         style: kTextStyle(14, textWeight: TextWeight.semiBold),
@@ -231,10 +273,10 @@ class _HomePageState extends State<HomePage> {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 8),
                                 child: ChoiceChip(
-                                    backgroundColor: const Color(0xfff4f4f4),
+                                    backgroundColor: Colors.brown[50],
                                     side: const BorderSide(
                                         style: BorderStyle.none),
-                                    selectedColor: const Color(0xff121212),
+                                    selectedColor: Colors.brown,
                                     showCheckmark: false,
                                     label: Text(
                                       '${category.name} ${selectedCategory == category ? placeCount : ''}',

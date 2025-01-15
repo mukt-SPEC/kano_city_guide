@@ -46,7 +46,7 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: Stack(
           children: [
             SingleChildScrollView(
@@ -60,20 +60,25 @@ class _DetailsPageState extends State<DetailsPage> {
                       borderRadius: BorderRadius.circular(0),
                       //color: const Color(0xfff2f2f2),
                     ),
-                    child: CarouselView(itemExtent: double.infinity, children: [
-                      ...site.placeImages.map((image) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            image: DecorationImage(
-                              opacity: 0.9,
-                              fit: BoxFit.fill,
-                              image: AssetImage('assets/images/$image'),
-                            ),
-                          ),
-                        );
-                      })
-                    ]),
+                    child: CarouselView(
+                        itemExtent: 340,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        children: [
+                          ...site.placeImages.map((image) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                image: DecorationImage(
+                                  opacity: 0.9,
+                                  fit: BoxFit.fill,
+                                  image: AssetImage('assets/images/$image'),
+                                ),
+                              ),
+                            );
+                          })
+                        ]),
                   ),
                   const SizedBox(
                     height: 12,
@@ -85,10 +90,13 @@ class _DetailsPageState extends State<DetailsPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            site.address!,
-                            style:
-                                kTextStyle(14, textWeight: TextWeight.normal),
+                          SizedBox(
+                            width: 300,
+                            child: Text(
+                              site.address!,
+                              style:
+                                  kTextStyle(14, textWeight: TextWeight.normal),
+                            ),
                           ),
                         ],
                       ),
@@ -178,23 +186,34 @@ class _DetailsPageState extends State<DetailsPage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Text(
-                    'Description',
-                    style: kTextStyle(16, textWeight: TextWeight.semiBold),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.info_rounded,
+                        color: Colors.brown,
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        'Description',
+                        style: kTextStyle(16, textWeight: TextWeight.semiBold),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 4,
                   ),
-                  Text(
-                    site.description!,
-                    style: kTextStyle(12),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    'Location',
-                    style: kTextStyle(16, textWeight: TextWeight.semiBold),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
+                    decoration: BoxDecoration(
+                      color: Colors.brown[50],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      site.description!,
+                      style: kTextStyle(14),
+                    ),
                   ),
                   const SizedBox(
                     height: 8,
@@ -207,7 +226,22 @@ class _DetailsPageState extends State<DetailsPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Reviews'),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.rate_review_rounded,
+                                color: Colors.brown,
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                'Reviews',
+                                style: kTextStyle(16,
+                                    textWeight: TextWeight.semiBold),
+                              ),
+                            ],
+                          ),
                           Text(
                             reviewCount.toString(),
                           ),
@@ -249,7 +283,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                         // height: 104,
                                         padding: const EdgeInsets.all(18),
                                         decoration: BoxDecoration(
-                                            color: const Color(0xffe6e6e6),
+                                            color: Colors.brown[50],
                                             borderRadius:
                                                 BorderRadius.circular(12)),
                                         child: Row(
@@ -334,7 +368,25 @@ class _DetailsPageState extends State<DetailsPage> {
                     ],
                   ),
                   const SizedBox(
-                    height: 24,
+                    height: 16,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.map_rounded,
+                        color: Colors.brown,
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        'Map',
+                        style: kTextStyle(16, textWeight: TextWeight.semiBold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
@@ -344,40 +396,45 @@ class _DetailsPageState extends State<DetailsPage> {
                       decoration: const BoxDecoration(
                         color: Color(0xfff2f2f2),
                       ),
-                      child: FlutterMap(
-                          options: MapOptions(
-                            initialCenter: LatLng(site.coordinate!.latitude!,
-                                site.coordinate!.longitude!),
-                            initialZoom: 16,
-                          ),
-                          children: [
-                            TileLayer(
-                                urlTemplate:
-                                    'https://api.mapbox.com/styles/v1/nanafirdaus/cm5nudaqf00d901rz67s03j1c/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
-                                userAgentPackageName:
-                                    'com.example.kano_city_guide',
-                                additionalOptions: const {
-                                  'accessToken':
-                                      'pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
-                                  'id':
-                                      'mapbox://styles/nanafirdaus/cm5nudaqf00d901rz67s03j1c'
-                                }),
-                            MarkerLayer(markers: [
-                              Marker(
-                                  width: 80.0,
-                                  height: 80.0,
-                                  point: LatLng(site.coordinate!.latitude!,
-                                      site.coordinate!.longitude!),
-                                  child: Container(
-                                    child: const Icon(
-                                      Icons.location_on,
-                                      color: Colors.red,
-                                      size: 40,
-                                    ),
-                                  ))
-                            ])
-                          ]),
+                      // child: FlutterMap(
+                      //     options: MapOptions(
+                      //       initialCenter: LatLng(site.coordinate!.latitude!,
+                      //           site.coordinate!.longitude!),
+                      //       initialZoom: 16,
+                      //       maxZoom: 19,
+                      //       minZoom: 3,
+                      //     ),
+                      //     children: [
+                      //       TileLayer(
+                      //           urlTemplate:
+                      //               'https://api.mapbox.com/styles/v1/nanafirdaus/cm5nudaqf00d901rz67s03j1c/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
+                      //           userAgentPackageName:
+                      //               'com.example.kano_city_guide',
+                      //           additionalOptions: const {
+                      //             'accessToken':
+                      //                 'pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
+                      //             'id':
+                      //                 'mapbox://styles/nanafirdaus/cm5nudaqf00d901rz67s03j1c'
+                      //           }),
+                      //       MarkerLayer(markers: [
+                      //         Marker(
+                      //             width: 80.0,
+                      //             height: 80.0,
+                      //             point: LatLng(site.coordinate!.latitude!,
+                      //                 site.coordinate!.longitude!),
+                      //             child: Container(
+                      //               child: const Icon(
+                      //                 Icons.location_on,
+                      //                 color: Colors.red,
+                      //                 size: 40,
+                      //               ),
+                      //             ))
+                      //       ])
+                      //     ]),
                     ),
+                  ),
+                  const SizedBox(
+                    height: 16,
                   ),
                 ],
               ),

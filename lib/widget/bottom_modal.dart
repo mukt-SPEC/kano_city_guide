@@ -20,6 +20,7 @@ class _BottomModalState extends State<BottomModal> {
   final FocusNode focusNodeEmail = FocusNode();
   final FocusNode focusNodePassword = FocusNode();
   bool hasAnAccount = true;
+  bool obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +59,11 @@ class _BottomModalState extends State<BottomModal> {
                       style: kTextStyle(14),
                       controller: _controllerUsername,
                       decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.person_rounded,
+                          size: 18,
+                          color: Colors.brown,
+                        ),
                         labelText: 'Full Name',
                         hintText: 'e.g john  doe',
                         border: OutlineInputBorder(
@@ -81,6 +87,11 @@ class _BottomModalState extends State<BottomModal> {
             style: kTextStyle(14),
             controller: _controllerEmail,
             decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.email_rounded,
+                size: 18,
+                color: Colors.brown,
+              ),
               labelText: 'Email Address',
               hintText: 'e.g johndoe@gmail.com',
               border: OutlineInputBorder(
@@ -96,10 +107,27 @@ class _BottomModalState extends State<BottomModal> {
             height: 12,
           ),
           TextField(
+            obscureText: obscureText,
             focusNode: focusNodePassword,
             style: kTextStyle(14),
             controller: _controllerPassword,
             decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.key_rounded,
+                size: 18,
+                color: Colors.brown,
+              ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    obscureText = !obscureText;
+                  });
+                },
+                icon: Icon(
+                  obscureText ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.brown,
+                ),
+              ),
               labelText: 'Password',
               hintText: 'Enter Password',
               border: OutlineInputBorder(
@@ -119,7 +147,7 @@ class _BottomModalState extends State<BottomModal> {
             height: 48,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.brown,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -175,7 +203,7 @@ class _BottomModalState extends State<BottomModal> {
                 ),
                 child: Text(
                   hasAnAccount ? 'Sign In' : 'Sign Up',
-                  style: kTextStyle(14, color: Colors.blue),
+                  style: kTextStyle(14, color: Colors.brown),
                 ),
               )
             ],
