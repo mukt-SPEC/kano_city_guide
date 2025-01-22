@@ -137,14 +137,14 @@ class Places extends StatelessWidget {
                         const SizedBox(
                           width: 4,
                         ),
-                        FutureBuilder(
-                            future:
+                        StreamBuilder(
+                            stream:
                                 DataBase().getRating(places.indexOf(sites!)),
                             initialData: 0.0,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return Text(
-                                  snapshot.data.toString() ?? '0.0',
+                                  snapshot.data!.toStringAsFixed(1) ?? '0.0',
                                   style: kTextStyle(14,
                                       textWeight: TextWeight.semiBold),
                                 );

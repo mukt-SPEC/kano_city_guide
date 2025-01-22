@@ -1,7 +1,7 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:kano_city_guide/model/rate.dart';
 import 'package:kano_city_guide/model/review.dart';
 import 'package:kano_city_guide/model/user.dart';
 import 'package:kano_city_guide/screen/favorite.dart';
@@ -65,19 +65,53 @@ class DataBase {
     }
   }
 
-  Future<void> createRating(double rating, int placeId) async {
-    await firestore.collection('Ratings').doc('place$placeId').set({
-      'ratings': FieldValue.arrayUnion([rating])
-    });
+  Future<void> createRating(Rate rate) async {
+    log(rate.toJson().toString());
+    try {
+      final doc = await firestore
+          .collection('Ratings')
+          .doc('place${rate.placeId}')
+          .get();
+      if (doc.exists) {
+        RateArray rateArray = RateArray.fromJson(doc.data()!);
+        bool ratingExists =
+            rateArray.ratings!.any((element) => element.uId == rate.uId);
+        if (ratingExists) {
+          Rate newRate = rateArray.ratings!
+              .firstWhere((element) => element.uId == rate.uId)
+              .copyWith(rating: rate.rating);
+          rateArray.ratings!.removeWhere((element) => element.uId == rate.uId);
+          rateArray.ratings!.add(newRate);
+          await firestore
+              .collection('Ratings')
+              .doc('place${rate.placeId}')
+              .update({'ratings': rateArray.toJson()['ratings']});
+        }
+      } else {
+        await firestore.collection('Ratings').doc('place${rate.placeId}').set({
+          'ratings': FieldValue.arrayUnion([rate.toJson()])
+        });
+      }
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
-  Future<double?> getRating(int placeId) async {
-    final doc =
-        await firestore.collection('Ratings').doc('place$placeId').get();
-        log(doc.data().toString());
-    final ratings = List.from(doc.data()!['ratings']);
-    return ratings.reduce((a, b) => a + b) / ratings.length ?? 0.0;
-  
+  Stream<double?> getRating(int placeId) {
+    Stream<RateArray?> rateArray = firestore
+        .collection('Ratings')
+        .doc('place$placeId')
+        .snapshots()
+        .map((s) => RateArray.fromJson(s.data()!));
+
+    return rateArray.map((e) {
+      double? averageRating = e!.ratings!
+              .reduce((value, element) =>
+                  Rate(rating: value.rating! + element.rating!))
+              .rating! /
+          e.ratings!.length;
+      return averageRating.toDouble();
+    });
   }
 
   Future<void> addFavoritePlace(String userId, int placeId) async {

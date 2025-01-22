@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:kano_city_guide/core/enums.dart';
 import 'package:kano_city_guide/core/site_list.dart';
+import 'package:kano_city_guide/widget/attribution.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../core/textstyle.dart';
@@ -17,6 +18,8 @@ import 'package:kano_city_guide/widget/bottom_modal.dart';
 import 'package:kano_city_guide/widget/review_modal.dart';
 import 'package:provider/provider.dart';
 
+import '../model/rate.dart';
+
 class DetailsPage extends StatefulWidget {
   final Touristsite site;
   const DetailsPage({required this.site, super.key});
@@ -26,6 +29,7 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  double? ratingX = 0;
   @override
   void initState() {
     super.initState();
@@ -33,7 +37,6 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    double? rating;
     int reviewCount = 0;
     final site = widget.site;
     return Scaffold(
@@ -106,7 +109,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 context: context,
                                 builder: (context) => AlertDialog(
                                   content: RatingBar.builder(
-                                      initialRating: 0.0,
+                                      initialRating: 0,
                                       minRating: 1,
                                       direction: Axis.horizontal,
                                       itemCount: 5,
@@ -118,7 +121,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                           ),
                                       onRatingUpdate: (rating) {
                                         setState(() {
-                                          rating = rating;
+                                          ratingX = rating;
                                         });
                                       }),
                                   actions: [
@@ -130,9 +133,14 @@ class _DetailsPageState extends State<DetailsPage> {
                                     ),
                                     ElevatedButton(
                                       onPressed: () async {
+                                        final rate = Rate(
+                                            uId: FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            rating: ratingX!,
+                                            placeId: places.indexOf(site));
+                                        log(rate.toString());
                                         await DataBase().createRating(
-                                          rating!,
-                                          places.indexOf(site),
+                                          rate,
                                         );
                                         Navigator.of(context).pop();
                                       },
@@ -161,18 +169,19 @@ class _DetailsPageState extends State<DetailsPage> {
                             const SizedBox(
                               width: 4,
                             ),
-                            FutureBuilder(
-                                future:
+                            StreamBuilder(
+                                stream:
                                     DataBase().getRating(places.indexOf(site)),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return Text(
-                                      snapshot.data.toString() ?? '0.0',
+                                      snapshot.data!.toStringAsFixed(1),
                                       style: kTextStyle(14,
                                           textWeight: TextWeight.semiBold),
                                     );
                                   } else if (snapshot.hasError) {
-                                    log(snapshot.error.toString());
+                                    log(snapshot.error.toString(),
+                                        stackTrace: snapshot.stackTrace);
                                     return const Text('0.0');
                                   } else {
                                     return const Text('0.0');
@@ -390,47 +399,54 @@ class _DetailsPageState extends State<DetailsPage> {
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      width: double.infinity,
-                      height: 300,
-                      decoration: const BoxDecoration(
-                        color: Color(0xfff2f2f2),
-                      ),
-                      // child: FlutterMap(
-                      //     options: MapOptions(
-                      //       initialCenter: LatLng(site.coordinate!.latitude!,
-                      //           site.coordinate!.longitude!),
-                      //       initialZoom: 16,
-                      //       maxZoom: 19,
-                      //       minZoom: 3,
-                      //     ),
-                      //     children: [
-                      //       TileLayer(
-                      //           urlTemplate:
-                      //               'https://api.mapbox.com/styles/v1/nanafirdaus/cm5nudaqf00d901rz67s03j1c/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
-                      //           userAgentPackageName:
-                      //               'com.example.kano_city_guide',
-                      //           additionalOptions: const {
-                      //             'accessToken':
-                      //                 'pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
-                      //             'id':
-                      //                 'mapbox://styles/nanafirdaus/cm5nudaqf00d901rz67s03j1c'
-                      //           }),
-                      //       MarkerLayer(markers: [
-                      //         Marker(
-                      //             width: 80.0,
-                      //             height: 80.0,
-                      //             point: LatLng(site.coordinate!.latitude!,
-                      //                 site.coordinate!.longitude!),
-                      //             child: Container(
-                      //               child: const Icon(
-                      //                 Icons.location_on,
-                      //                 color: Colors.red,
-                      //                 size: 40,
-                      //               ),
-                      //             ))
-                      //       ])
-                      //     ]),
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 300,
+                          decoration: const BoxDecoration(
+                            color: Color(0xfff2f2f2),
+                          ),
+                          child: FlutterMap(
+                              options: MapOptions(
+                                initialCenter: LatLng(
+                                    site.coordinate!.latitude!,
+                                    site.coordinate!.longitude!),
+                                initialZoom: 16,
+                                maxZoom: 19,
+                                minZoom: 3,
+                              ),
+                              children: [
+                                TileLayer(
+                                    urlTemplate:
+                                        'https://api.mapbox.com/styles/v1/nanafirdaus/cm5nudaqf00d901rz67s03j1c/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
+                                    userAgentPackageName:
+                                        'com.example.kano_city_guide',
+                                    additionalOptions: const {
+                                      'accessToken':
+                                          'pk.eyJ1IjoibmFuYWZpcmRhdXMiLCJhIjoiY201bWg0OHVtMDA0cTJoczhuZ29iamg5ayJ9.tLHLFHtZUjKGBzT-C6LMQg',
+                                      'id':
+                                          'mapbox://styles/nanafirdaus/cm5nudaqf00d901rz67s03j1c'
+                                    }),
+                                MarkerLayer(markers: [
+                                  Marker(
+                                      width: 80.0,
+                                      height: 80.0,
+                                      point: LatLng(site.coordinate!.latitude!,
+                                          site.coordinate!.longitude!),
+                                      child: Container(
+                                        child: const Icon(
+                                          Icons.location_on,
+                                          color: Colors.red,
+                                          size: 40,
+                                        ),
+                                      ))
+                                ])
+                              ]),
+                        ),
+                        const AttributionWidget(),
+                      ],
                     ),
                   ),
                   const SizedBox(

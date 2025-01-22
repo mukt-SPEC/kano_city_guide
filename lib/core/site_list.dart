@@ -20,6 +20,24 @@ List<Touristsite> places = [
     rating: 1 + double.parse((Random().nextDouble() * 4).toStringAsFixed(1)),
   ),
   Touristsite(
+    coordinate: Coordinate(
+        latitude: 12.0314, longitude: 8.5453), // Approximate coordinates
+    placeName: 'Minjibir Park',
+    category: Category.recreational,
+    address: 'Minjibir, Kano State, Nigeria',
+    placeImages: [
+      'mjinbir1.jpg',
+      'mjinbir2.jpg',
+      'mjinbir3.jpg',
+      'mjinbir4.jpg',
+    ],
+    description:
+        'Minjibir Park is a serene escape in Kano, offering lush greenery, well-maintained landscapes, and a peaceful atmosphere. It\'s a popular spot for picnics, leisurely walks, and enjoying the beauty of nature.',
+    userReview: 10 + Random().nextInt(50),
+    //rating: 1 + double.parse((Random().nextDouble() * 4).toStringAsFixed(1)),
+  ),
+
+  Touristsite(
     coordinate: Coordinate(latitude: 11.98884, longitude: 8.520948),
     placeName: 'Gidan Makama',
     category: Category.musuem,
@@ -74,6 +92,22 @@ List<Touristsite> places = [
     ],
     description:
         'The Kano Central Mosque, also known as the Great Mosque of Kano, is a prominent landmark in the city of Kano, Nigeria. It is one of the oldest and most important mosques in the country, dating back to the 15th century. The mosque is known for its distinctive architecture, featuring a tall minaret and a large dome. It is an important place of worship for Muslims in Kano and a popular tourist destination.',
+    userReview: 10 + Random().nextInt(50),
+    rating: 1 + double.parse((Random().nextDouble() * 4).toStringAsFixed(1)),
+  ),
+  Touristsite(
+    coordinate: Coordinate(
+        latitude: 12.0362, longitude: 8.5408), // Approximate coordinates
+    placeName: 'Sky Park and Gardens',
+    category: Category.recreational,
+    address: 'No.8 Lamido Road, Nasarawa, Kano',
+    placeImages: [
+      'skpark0.jpg',
+      'skpark1.jpg',
+      'skpark2.jpg',
+    ],
+    description:
+        'Sky Park and Gardens is an exciting amusement park in Kano offering a variety of thrilling rides, games, and attractions for all ages. Enjoy the adrenaline rush of roller coasters, test your skills at arcade games, or relax in the beautifully landscaped gardens.',
     userReview: 10 + Random().nextInt(50),
     rating: 1 + double.parse((Random().nextDouble() * 4).toStringAsFixed(1)),
   ),

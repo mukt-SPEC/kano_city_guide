@@ -131,63 +131,70 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.brown,
                   ),
                 ),
-                FirebaseAuth.instance.currentUser == null
-                    ? GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            showDragHandle: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(12),
-                              ),
-                            ),
-                            context: context,
-                            builder: (context) => const BottomModal(),
-                          );
+                StreamBuilder(
+                  stream: FirebaseAuth.instance.authStateChanges(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return Container(
+                      child: FirebaseAuth.instance.currentUser == null
+                          ? GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  showDragHandle: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(12),
+                                    ),
+                                  ),
+                                  context: context,
+                                  builder: (context) => const BottomModal(),
+                                );
 
-                          // : Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => const ProfilePage(),
-                          //     ),
-                          //   );
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: Colors.brown[50],
-                          radius: 18,
-                          child: const Icon(
-                            Icons.person,
-                            color: Colors.brown,
-                          ),
-                        ),
-                      )
-                    : PopupMenuButton(
-                        icon: CircleAvatar(
-                          backgroundColor: Colors.brown[50],
-                          radius: 18,
-                          child: Text(
-                            nameInitials(FirebaseAuth
-                                .instance.currentUser!.displayName!),
-                            style: kTextStyle(14,
-                                color: Colors.brown[500]!,
-                                textWeight: TextWeight.medium),
-                          ),
-                        ),
-                        itemBuilder: (context) {
-                          return [
-                            PopupMenuItem(
-                              child: ListTile(
-                                title: const Text('Sign Out'),
-                                onTap: () {
-                                  FirebaseAuth.instance.signOut();
-                                  Navigator.pop(context);
-                                },
+                                // : Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //       builder: (context) => const ProfilePage(),
+                                //     ),
+                                //   );
+                              },
+                              child: CircleAvatar(
+                                backgroundColor: Colors.brown[50],
+                                radius: 18,
+                                child: const Icon(
+                                  Icons.person,
+                                  color: Colors.brown,
+                                ),
                               ),
+                            )
+                          : PopupMenuButton(
+                              icon: CircleAvatar(
+                                backgroundColor: Colors.brown[50],
+                                radius: 18,
+                                child: Text(
+                                  nameInitials(FirebaseAuth
+                                      .instance.currentUser!.displayName!),
+                                  style: kTextStyle(14,
+                                      color: Colors.brown[500]!,
+                                      textWeight: TextWeight.medium),
+                                ),
+                              ),
+                              itemBuilder: (context) {
+                                return [
+                                  PopupMenuItem(
+                                    child: ListTile(
+                                      title: const Text('Sign Out'),
+                                      onTap: () {
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ),
+                                ];
+                              },
                             ),
-                          ];
-                        },
-                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
