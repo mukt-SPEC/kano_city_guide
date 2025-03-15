@@ -38,6 +38,7 @@ class AuthProvider extends ChangeNotifier {
         User(
           id: FirebaseAuth.instance.currentUser!.uid,
           name: name,
+          email: email,
           favouritePlaces: [],
         ),
       );
